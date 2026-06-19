@@ -1,13 +1,38 @@
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import {useState, useEffect} from "react";
+import api from "../services/api"
 
 export function Dashboard() {
+    const [ employeeCount, setEmployeeCount ] = useState(0);
+    const [expenseTotal, setExpenseTotal] = useState(0);
     const {user, logout} = useAuth();
     const navigate = useNavigate();
     const handleLogout=()=>{
         logout();
         navigate('/login');
     }
+    const loadStats = async()=>{
+        try
+        {
+            const response = await api.get("/employees");
+            console.log("Employees response:", response.data);
+            setEmployeeCount(response.data.count);
+
+            const expenseResponse = await api.get("/expenses");
+            const total = expenseResponse.data.expenses.reduce((sum: number, exp: { amount: number }) => sum + exp.amount, 0);
+            setExpenseTotal(total);
+        }
+        catch(error){
+            console.log("Failed fetching stats:", error);
+        }
+    }
+    useEffect(()=>{
+        const load=async()=>{
+            await loadStats();
+        }
+        load();
+    }, []);
     return (
         <div className="min-h-screen bg-gray-100">
             <header className="bg-white shadow">
@@ -22,10 +47,10 @@ export function Dashboard() {
             <nav className="bg-white border-b">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="flex gap-8">
-                        <button className="py-4 px-2 border-b-2 border-blue-500 text-blue-600 font-medium">Dashboard</button>
-                        <button className="py-4 px-2 text-gray-600 hover:text-gray-800">Employees</button>
-                        <button className="py-4 px-2 text-gray-600 hover:text-gray-800">Expenses</button>
-                        <button className="py-4 px-2 text-gray-600 hover:text-gray-800">Payroll</button>
+                        <button onClick={() => navigate('/dashboard')} className="py-4 px-2 border-b-2 border-blue-500 text-blue-600 font-medium">Dashboard</button>
+                        <button onClick={() => navigate('/employees')} className="py-4 px-2 text-gray-600 hover:text-gray-800">Employees</button>
+                        <button onClick={() => navigate('/expenses')} className="py-4 px-2 text-gray-600 hover:text-gray-800">Expenses</button>
+                        <button onClick={() => navigate('/payroll')} className="py-4 px-2 text-gray-600 hover:text-gray-800">Payroll</button>
                     </div>
                 </div>
             </nav>
@@ -36,7 +61,7 @@ export function Dashboard() {
                         <div className="flex items-center justify-between">
                         <div>
                             <p className="text-gray-600 text-sm">Total Employees</p>
-                            <p className="text-3xl font-bold text-gray-800">0</p>
+                            <p className="text-3xl font-bold text-gray-800">{employeeCount}</p>
                         </div>
                         <div className="bg-blue-100 p-3 rounded-full">
                             <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,7 +74,7 @@ export function Dashboard() {
                         <div className="flex items-center justify-between">
                         <div>
                             <p className="text-gray-600 text-sm">Total Expenses</p>
-                            <p className="text-3xl font-bold text-gray-800">$0</p>
+                            <p className="text-3xl font-bold text-gray-800">R{expenseTotal.toFixed(2)}</p>
                         </div>
                         <div className="bg-green-100 p-3 rounded-full">
                             <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

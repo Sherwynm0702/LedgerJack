@@ -5,7 +5,7 @@ export const createExpense = async (req: Request, res: Response) => {
   try {
     const { amount, category } = req.body;
     const userId = req.user?.userId;
- 
+    
     // Validation: Check required fields
     if (!amount || !category) {
       return res.status(400).json({ error: 'Amount and category are required' });
@@ -88,7 +88,6 @@ export const updateExpense = async (req: Request, res: Response) => {
     if (!amount && !category) {
       return res.status(400).json({ error: 'At least one field (amount or category) is required' });
     }
- 
     // Validation: Check amount is positive if provided
     if (amount !== undefined && (typeof amount !== 'number' || amount <= 0)) {
       return res.status(400).json({ error: 'Amount must be a positive number' });
@@ -131,9 +130,9 @@ export const deleteExpense = async (req: Request, res: Response) => {
     if (typeof id !== 'string') {
       return res.status(400).json({ error: 'Invalid expense ID' });
     }
- if (!userId) {
-  return res.status(401).json({ error: 'User not authenticated' });
-}
+    if (!userId) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
     // Check if expense exists and belongs to user
     const existingExpense = await prisma.expense.findFirst({
       where: { id: parseInt(id), userId },
@@ -142,13 +141,12 @@ export const deleteExpense = async (req: Request, res: Response) => {
     if (!existingExpense) {
       return res.status(404).json({ error: 'Expense not found' });
     }
- 
     // Delete expense
     await prisma.expense.delete({
       where: { id: parseInt(id) },
     });
- 
     res.status(200).json({ message: 'Expense deleted successfully' });
+
   } catch (error) {
     console.error('Delete expense error:', error);
     res.status(500).json({ error: 'Internal server error' });
