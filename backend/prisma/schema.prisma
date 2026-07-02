@@ -18,6 +18,7 @@ model User{
   password String
   createdAt DateTime @default(now())
   expense Expense[]
+  employees Employee[]
 }
 
 model Employee{
@@ -25,7 +26,10 @@ model Employee{
   name String
   salary Float
   createdAt DateTime @default(now())
+  userId Int
+  user User @relation(fields: [userId], references: [id])
   payrolls PayrollRecord[]
+  @@index ([userId])
 }
 
 model Expense{

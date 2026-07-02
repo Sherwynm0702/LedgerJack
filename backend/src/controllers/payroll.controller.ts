@@ -4,6 +4,11 @@ import { prisma } from '../utils/prisma.js';
 export const calculatePayroll = async (req: Request, res: Response) => {
   try {
     const { employeeId } = req.body;
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
 
     // Validation: Check required field
     if (!employeeId) {
@@ -15,9 +20,9 @@ export const calculatePayroll = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Employee ID must be a number' });
     }
 
-    // Get employee
-    const employee = await prisma.employee.findUnique({
-      where: { id: employeeId },
+    // Get employee — scoped to the requesting user
+    const employee = await prisma.employee.findFirst({
+      where: { id: employeeId, userId },
     });
 
     if (!employee) {
@@ -53,7 +58,15 @@ export const calculatePayroll = async (req: Request, res: Response) => {
 
 export const getPayrollRecords = async (req: Request, res: Response) => {
   try{
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: 'User not authenticated' });
+    }
+
+    // Only return payroll records for employees owned by this user
     const payrollRecords = await prisma.payrollRecord.findMany({
+      where: { employee: { userId } },
       orderBy: { date: 'desc' },
       include: {
         employee: true,

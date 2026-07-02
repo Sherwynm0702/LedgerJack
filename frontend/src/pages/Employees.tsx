@@ -9,6 +9,7 @@ interface Employee{
 export function Employees(){
     const [employees,setEmployees] = useState<Employee[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
     const [showAddForm, setShowAddForm] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
@@ -17,18 +18,19 @@ export function Employees(){
     const [editingId, setEditingId] = useState<number | null>(null);
 
 
-    const fetchEmployees = async()=>{
-        try{
-            const response = await api.get("/employees");
-            setEmployees(response.data.employees);
-        }
-        catch(error:any){
-            console.error("Error fetching employees:", error);
-        }
-        finally{
-            setLoading(false);
-        }
+const fetchEmployees = async()=>{
+    try{
+        const response = await api.get("/employees");
+        setEmployees(response.data.employees);
+        setError("");
     }
+    catch(error){
+        setError("Failed to load employees. Please try again.");
+    }
+    finally{
+        setLoading(false);
+    }
+}
     const handleAddEmployee = async()=>{
         try{
             await api.post('/employees', formData);
@@ -94,14 +96,23 @@ export function Employees(){
                     <button onClick={handleAddEmployee} className="mt-4 bg-green-600 text-white px-4 py-2 hover:bg-green-700 transition">Save</button>
                 </div>
             )}
-            {employees.map((emp) => (
-            <div key={emp.id} className="bg-white rounded-lg shadow p-4 mb-2 flex items-center justify-between">
-                <p className="font-bold">{emp.name}</p>
-                <p className="text-gray-600">R{emp.salary}</p>
-                <button onClick={()=>handleDeleteEmployee(emp.id)} className="bg-red-500 rounded-lg text-white px-4 py-2 hover:bg-red-600 transition">Delete</button>
-                <button onClick={()=>{setEditingId(emp.id); setFormData({name: emp.name, salary: emp.salary})}} className="bg-blue-500 rounded-lg text-white px-4 py-2 hover:bg-blue-600 transition">Edit</button>
-            </div>
-            ))}
+            {error && (
+                <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-4">{error}</div>
+            )}
+            {loading ? (
+                <p className="text-gray-500">Loading employees...</p>
+            ) : employees.length === 0 ? (
+                <p className="text-gray-500">No employees yet. Add one to get started.</p>
+            ) : (
+                employees.map((emp) => (
+                <div key={emp.id} className="bg-white rounded-lg shadow p-4 mb-2 flex items-center justify-between">
+                    <p className="font-bold">{emp.name}</p>
+                    <p className="text-gray-600">R{emp.salary}</p>
+                    <button onClick={()=>handleDeleteEmployee(emp.id)} className="bg-red-500 rounded-lg text-white px-4 py-2 hover:bg-red-600 transition">Delete</button>
+                    <button onClick={()=>{setEditingId(emp.id); setFormData({name: emp.name, salary: emp.salary})}} className="bg-blue-500 rounded-lg text-white px-4 py-2 hover:bg-blue-600 transition">Edit</button>
+                </div>
+                ))
+            )}
             {editingId !== null && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow p-6 w-full max-w-md">

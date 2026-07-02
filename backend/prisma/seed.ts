@@ -35,6 +35,7 @@ async function main() {
     data: {
       name: 'John Doe',
       salary: 50000,
+      userId: user1.id,
     },
   });
 
@@ -42,6 +43,7 @@ async function main() {
     data: {
       name: 'Jane Smith',
       salary: 60000,
+      userId: user2.id,
     },
   });
 
