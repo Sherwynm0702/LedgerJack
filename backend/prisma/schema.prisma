@@ -47,6 +47,6 @@ model PayrollRecord{
   employeeId Int
   amount Float
   date DateTime @default(now())
-  employee Employee @relation(fields: [employeeId], references: [id])
+  employee Employee @relation(fields: [employeeId], references: [id] , onDelete: Cascade)
   @@index([employeeId])
 }
