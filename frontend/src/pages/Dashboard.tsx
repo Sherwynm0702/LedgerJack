@@ -35,11 +35,11 @@ export function Dashboard() {
         load();
     }, []);
 
-    const stats = [
-        { label: "Total Employees", value: employeeCount, icon: Users, tint: "bg-blue-500/10 text-blue-600" },
-        { label: "Total Expenses", value: `R${expenseTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: Wallet, tint: "bg-emerald-500/10 text-emerald-600" },
-        { label: "Payroll Records", value: payrollCount, icon: FileText, tint: "bg-violet-500/10 text-violet-600" },
-    ];
+const stats = [
+    { label: "Total Employees", value: employeeCount, icon: Users, tint: "bg-blue-500/10 text-blue-600", accent: "border-t-blue-500" },
+    { label: "Total Expenses", value: `R${expenseTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: Wallet, tint: "bg-emerald-500/10 text-emerald-600", accent: "border-t-emerald-500" },
+    { label: "Payroll Records", value: payrollCount, icon: FileText, tint: "bg-violet-500/10 text-violet-600", accent: "border-t-violet-500" },
+];
 
     const actions = [
         { title: "Add Employee", description: "Add a new employee", path: "/employees", icon: UserPlus, tint: "bg-blue-500/10 text-blue-600" },
@@ -55,7 +55,7 @@ export function Dashboard() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                     {stats.map((stat) => (
-                        <Card key={stat.label} className="relative overflow-hidden">
+                        <Card key={stat.label} className={`border-t-4 ${stat.accent}`}>
                             <CardContent className="flex items-center justify-between p-6">
                                 <div>
                                     <p className="text-sm text-muted-foreground">{stat.label}</p>
