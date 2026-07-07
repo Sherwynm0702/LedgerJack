@@ -1,34 +1,50 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+const links = [
+    { label: "Dashboard", path: "/dashboard" },
+    { label: "Employees", path: "/employees" },
+    { label: "Expenses", path: "/expenses" },
+    { label: "Payroll", path: "/payroll" },
+];
 
 export function Navbar(){
     const navigate = useNavigate();
     const location = useLocation();
-    const { user,logout } = useAuth(); 
+    const { user, logout } = useAuth();
     const handleLogout = () => {
         logout();
         navigate('/login');
     }
     return (
-        <div>
-            <header className="bg-white shadow">
-                <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-                    <h1 className="text-2xl font-bold text-gray-800">LedgerJack</h1>
-                    <div className="flex items-center gap-4">
-                        <p className="text-gray-600">Welcome, {user?.email}</p>
-                        <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">Logout</button>
-                    </div>
+        <header className="border-b bg-card">
+            <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-6">
+                <div className="flex items-center gap-6">
+                    <span className="font-semibold text-lg tracking-tight">LedgerJack</span>
+                    <nav className="flex items-center gap-1">
+                        {links.map((link) => (
+                            <button
+                                key={link.path}
+                                onClick={() => navigate(link.path)}
+                                className={cn(
+                                    "px-3 py-1.5 rounded-md text-sm font-medium transition-colors",
+                                    location.pathname === link.path
+                                        ? "bg-secondary text-secondary-foreground"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                                )}
+                            >
+                                {link.label}
+                            </button>
+                        ))}
+                    </nav>
                 </div>
-            </header>
-        <nav className="bg-white border-b shadow-sm">
-            <div className="max-w-7xl mx-auto px-4 flex gap-8">
-                <button onClick={() => navigate('/dashboard')} className={`py-4 px-2 transition border-b-2 ${location.pathname === '/dashboard' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600 hover:text-blue-600'}`}>Dashboard</button>
-                <button onClick={() => navigate('/employees')} className={`py-4 px-2 transition border-b-2 ${location.pathname === '/employees' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600 hover:text-blue-600'}`}>Employees</button>
-                <button onClick={() => navigate('/expenses')} className={`py-4 px-2 transition border-b-2 ${location.pathname === '/expenses' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600 hover:text-blue-600'}`}>Expenses</button>
-                <button onClick={() => navigate('/payroll')} className={`py-4 px-2 transition border-b-2 ${location.pathname === '/payroll' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-600 hover:text-blue-600'}`}>Payroll</button>
+                <div className="flex items-center gap-3">
+                    <span className="text-sm text-muted-foreground hidden sm:inline">{user?.email}</span>
+                    <Button variant="outline" size="sm" onClick={handleLogout}>Logout</Button>
+                </div>
             </div>
-        </nav>
-        </div>
+        </header>
     );
-
 }
