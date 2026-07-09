@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-
+import {toast} from "sonner";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 interface Employee{
     id:number;
     name:string;
@@ -44,18 +45,20 @@ export function Employees(){
             setFormData({name: "", salary: 0});
             setShowAddForm(false);
             fetchEmployees();
+            toast.success('Employee added successfully!');
         }
         catch(error){
-            console.log('Failed adding employee:', error);
+            toast.error('Failed to add employee.');
         }
     }
     const handleDeleteEmployee = async(id:number)=>{
         try{
             await api.delete(`/employees/${id}`);
             fetchEmployees();
+            toast.success('Employee deleted successfully!');
         }
         catch(error){
-            console.log('Failed deleting employee:', error);
+            toast.error('Failed to delete employee.');
         }
     }
     const handleUpdateEmployee = async(id:number)=>{
@@ -64,9 +67,10 @@ export function Employees(){
             setFormData({name: "", salary: 0});
             setEditingId(null);
             fetchEmployees();
+            toast.success('Employee updated successfully!');
         }
         catch(error){
-            console.log('Failed updating employee:', error);
+            toast.error('Failed to update employee.');
         }
     }
     useEffect(()=>{
@@ -111,7 +115,23 @@ export function Employees(){
                                         <TableCell>R{emp.salary.toLocaleString()}</TableCell>
                                         <TableCell className="text-right space-x-2">
                                             <Button variant="outline" size="sm" onClick={()=>{ setEditingId(emp.id); setFormData({name: emp.name, salary: emp.salary}); }}>Edit</Button>
-                                            <Button variant="destructive" size="sm" onClick={()=>handleDeleteEmployee(emp.id)}>Delete</Button>
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button variant="destructive" size="sm">Delete</Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>Delete {emp.name}?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            This will permanently remove the employee and all their payroll records. This can't be undone.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={()=>handleDeleteEmployee(emp.id)}>Delete</AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
                                         </TableCell>
                                     </TableRow>
                                 ))}

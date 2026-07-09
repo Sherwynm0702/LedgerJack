@@ -4,6 +4,7 @@ import { Navbar } from "../components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { toast } from "sonner";
 
 interface Employee{
     id:number;
@@ -43,12 +44,12 @@ export function Payroll(){
     }
     const handleRunPayroll=async(employeeId:number)=>{
         try{
-            const response = await api.post('/payroll/calculate', {employeeId});
-            alert(response.data.message);
+            await api.post('/payroll/calculate', {employeeId});
+            toast.success("Payroll processed");
             loadPayrollRecords();
         }
         catch(error){
-            console.log("Failed running payroll:", error);
+            toast.error("Failed to run payroll");
         }
     }
     useEffect(()=>{

@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {toast} from "sonner";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 interface Expense{
     id:number;
@@ -44,18 +46,20 @@ export function Expenses(){
             setFormData({amount: 0, category: ""});
             setShowAddForm(false);
             loadExpenses();
+            toast.success("Expense added");
         }
         catch(error){
-            console.log("Failed adding expense:", error);
+            toast.error("Failed to add expense");
         }
     }
     const handleDelete = async(id:number)=>{
         try{
             await api.delete(`/expenses/${id}`);
             loadExpenses();
+            toast.success("Expense deleted");
         }
         catch(error){
-            console.log("Failed deleting expense:", error);
+            toast.error("Failed to delete expense");
         }
     }
     const handleUpdateExpense = async(id:number)=>{
@@ -64,9 +68,10 @@ export function Expenses(){
             setFormData({ amount: 0, category: "" });
             setEditingId(null);
             loadExpenses();
+            toast.success("Expense updated");
         }
         catch(error){
-            console.log("Failed updating expense:", error);
+            toast.error("Failed to update expense");
         }
     }
     useEffect(()=>{
@@ -111,7 +116,23 @@ export function Expenses(){
                                         <TableCell>R{exp.amount.toLocaleString()}</TableCell>
                                         <TableCell className="text-right space-x-2">
                                             <Button variant="outline" size="sm" onClick={()=>{ setEditingId(exp.id); setFormData({amount: exp.amount, category: exp.category}); }}>Edit</Button>
-                                            <Button variant="destructive" size="sm" onClick={()=>handleDelete(exp.id)}>Delete</Button>
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button variant="destructive" size="sm">Delete</Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>Delete this expense?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            This will permanently remove the "{exp.category}" expense. This can't be undone.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={()=>handleDelete(exp.id)}>Delete</AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
                                         </TableCell>
                                     </TableRow>
                                 ))}

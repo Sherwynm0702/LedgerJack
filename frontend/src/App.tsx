@@ -7,7 +7,8 @@ import {Dashboard} from './pages/Dashboard';
 import {Employees} from './pages/Employees';
 import {Expenses} from './pages/Expenses';
 import {Payroll} from './pages/Payroll';
- 
+import { Toaster } from '@/components/ui/sonner';
+
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/payroll" element={ <ProtectedRoute><Payroll /></ProtectedRoute>}/>
         </Routes>
       </BrowserRouter>
+      <Toaster richColors />
     </AuthProvider>
   );
 }
