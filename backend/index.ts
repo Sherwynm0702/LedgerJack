@@ -11,7 +11,8 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json()); // Parse JSON request bodies
-app.use(cors()); // Enable CORS for frontend requests
+// Allow only the configured frontend origin in production; allow all if unset (dev)
+app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
 
 // Routes
 app.use('/api/auth', authRoutes);
