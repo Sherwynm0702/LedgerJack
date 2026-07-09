@@ -1,4 +1,5 @@
 import {useState, useEffect} from "react";
+import { useLocation } from "react-router-dom";
 import api from "../services/api"
 import { Navbar } from "../components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -74,12 +75,19 @@ export function Expenses(){
             toast.error("Failed to update expense");
         }
     }
+    const location = useLocation();
     useEffect(()=>{
         const load=async()=>{
             await loadExpenses();
         }
         load();
     },[]);
+    useEffect(()=>{
+        if (location.state?.openAdd) {
+            setFormData({ amount: 0, category: "" });
+            setShowAddForm(true);
+        }
+    }, [location.state]);
 
     return(
         <>

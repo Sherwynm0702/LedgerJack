@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import api from "../services/api"
 import { Navbar } from "../components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -73,12 +74,19 @@ export function Employees(){
             toast.error('Failed to update employee.');
         }
     }
+    const location = useLocation();
     useEffect(()=>{
         const fetch = async()=>{
             await fetchEmployees();
         }
         fetch();
     },[]);
+    useEffect(()=>{
+        if (location.state?.openAdd) {
+            setFormData({ name: "", salary: 0 });
+            setShowAddForm(true);
+        }
+    }, [location.state]);
 
     return(
         <>
