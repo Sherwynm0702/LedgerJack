@@ -159,7 +159,7 @@ export function Expenses(){
                     <div className="grid gap-4 py-2">
                         <div className="grid gap-2">
                             <Label htmlFor="add-amount">Amount (R)</Label>
-                            <Input id="add-amount" type="number" value={formData.amount} onChange={(e)=>setFormData({...formData, amount: Number(e.target.value)})} placeholder="Enter amount" />
+                            <Input id="add-amount" type="number" value={formData.amount || ""} onChange={(e)=>setFormData({...formData, amount: Number(e.target.value)})} placeholder="Enter amount" />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="add-category">Category</Label>
@@ -181,7 +181,7 @@ export function Expenses(){
                     <div className="grid gap-4 py-2">
                         <div className="grid gap-2">
                             <Label htmlFor="edit-amount">Amount (R)</Label>
-                            <Input id="edit-amount" type="number" value={formData.amount} onChange={(e)=>setFormData({...formData, amount: Number(e.target.value)})} />
+                            <Input id="edit-amount" type="number" value={formData.amount || ""} onChange={(e)=>setFormData({...formData, amount: Number(e.target.value)})} />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="edit-category">Category</Label>

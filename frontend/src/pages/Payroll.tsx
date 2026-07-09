@@ -48,8 +48,8 @@ export function Payroll(){
             toast.success("Payroll processed");
             loadPayrollRecords();
         }
-        catch(error){
-            toast.error("Failed to run payroll");
+        catch(error: any){
+            toast.error(error?.response?.data?.error || "Failed to run payroll");
         }
     }
     useEffect(()=>{

@@ -162,7 +162,7 @@ export function Employees(){
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="add-salary">Salary</Label>
-                            <Input id="add-salary" type="number" value={formData.salary} onChange={(e)=>setFormData({...formData, salary: Number(e.target.value)})} placeholder="Enter salary" />
+                            <Input id="add-salary" type="number" value={formData.salary || ""} onChange={(e)=>setFormData({...formData, salary: Number(e.target.value)})} placeholder="Enter salary" />
                         </div>
                     </div>
                     <DialogFooter>
@@ -184,7 +184,7 @@ export function Employees(){
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="edit-salary">Salary</Label>
-                            <Input id="edit-salary" type="number" value={formData.salary} onChange={(e)=>setFormData({...formData, salary: Number(e.target.value)})} />
+                            <Input id="edit-salary" type="number" value={formData.salary || ""} onChange={(e)=>setFormData({...formData, salary: Number(e.target.value)})} />
                         </div>
                     </div>
                     <DialogFooter>

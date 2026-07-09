@@ -29,6 +29,22 @@ export const calculatePayroll = async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Employee not found' });
     }
 
+    // Prevent running payroll more than once per calendar month for this employee
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    const existingRun = await prisma.payrollRecord.findFirst({
+      where: {
+        employeeId,
+        date: { gte: startOfMonth, lt: startOfNextMonth },
+      },
+    });
+
+    if (existingRun) {
+      return res.status(409).json({ error: 'Payroll has already been run for this employee this month' });
+    }
+
     // Basic calculation: salary as payroll amount
     const payrollAmount = employee.salary;
 
