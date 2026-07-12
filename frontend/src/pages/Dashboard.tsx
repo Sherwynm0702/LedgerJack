@@ -92,12 +92,12 @@ const stats = [
                         {categoryData.length === 0 ? (
                             <p className="text-sm text-muted-foreground">No expense data yet.</p>
                         ) : (
-                            <ChartContainer config={chartConfig} className="h-64 w-full">
+                            <ChartContainer config={chartConfig} className="h-56 w-full">
                                 <BarChart data={categoryData}>
                                     <CartesianGrid vertical={false} />
                                     <XAxis dataKey="category" tickLine={false} axisLine={false} tickMargin={8} />
                                     <ChartTooltip content={<ChartTooltipContent />} />
-                                    <Bar dataKey="total" fill="var(--color-total)" radius={6} />
+                                    <Bar dataKey="total" fill="var(--color-total)" radius={6} maxBarSize={72} />
                                 </BarChart>
                             </ChartContainer>
                         )}
