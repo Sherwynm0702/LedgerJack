@@ -65,10 +65,10 @@ const stats = [
     return (
         <div className="min-h-screen">
             <Navbar />
-            <main className="max-w-5xl mx-auto px-4 py-8">
-                <h1 className="text-3xl font-semibold tracking-tight mb-6">Dashboard</h1>
+            <main className="max-w-5xl mx-auto px-4 py-6">
+                <h1 className="text-3xl font-semibold tracking-tight mb-5">Dashboard</h1>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     {stats.map((stat) => (
                         <Card key={stat.label} className={`border-t-4 ${stat.accent}`}>
                             <CardContent className="flex items-center justify-between p-6">
@@ -85,7 +85,7 @@ const stats = [
                 </div>
 
                 <h2 className="text-xl font-semibold tracking-tight mb-4">Quick Actions</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     {actions.map((action) => (
                         <Card
                             key={action.path}
@@ -113,7 +113,7 @@ const stats = [
                         {categoryData.length === 0 ? (
                             <p className="text-sm text-muted-foreground">No expense data yet.</p>
                         ) : (
-                            <ChartContainer config={chartConfig} className="h-56 w-full">
+                            <ChartContainer config={chartConfig} className="h-48 w-full">
                                 <BarChart data={categoryData}>
                                     <CartesianGrid vertical={false} />
                                     <XAxis dataKey="category" tickLine={false} axisLine={false} tickMargin={8} />
