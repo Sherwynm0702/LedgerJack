@@ -1,80 +1,99 @@
 # LedgerJack
 
-A full-stack business management system for tracking employees, expenses, and payroll — built with React, TypeScript, Express, and PostgreSQL.
+LedgerJack is a small business management app for tracking employees, expenses, and payroll in one place. I built it as a full-stack project to get more comfortable with the things real apps need — auth, keeping each user's data separate, some actual business logic, and a UI that looks reasonably polished.
 
-## Features
+It's a learning project, but I tried to build it like something that could actually be used rather than just a demo.
 
-- **Authentication** — secure register/login with hashed passwords (bcrypt) and JWT-based sessions
-- **Employee Management** — full CRUD: add, edit, and remove employees with salary tracking
-- **Expense Tracking** — log, edit, categorize, and delete business expenses (scoped per user)
-- **Payroll** — run payroll per employee and view a full historical record of every run
-- **Dashboard** — live analytics: total employees, total expenses, and payroll record count
+**Live demo:** https://ledger-jack.vercel.app
 
-## Tech Stack
+You can log in with the demo account instead of registering:
 
-| Layer | Technology |
-|---|---|
-| Frontend | React, TypeScript, Tailwind CSS, React Router, Axios |
-| Backend | Node.js, Express, TypeScript |
-| Database | PostgreSQL with Prisma ORM |
-| Auth | JWT, bcrypt |
+- Email: `admin@biztrack.com`
+- Password: `password123`
 
-## Getting Started
+> Note: the backend is hosted on a free tier that sleeps when idle, so the first request can take 30–50 seconds to spin up. It's fast after that.
 
-### Prerequisites
-- Node.js 18+
-- PostgreSQL database
+![LedgerJack dashboard](docs/screenshot-dashboard.png)
 
-### Setup
+## What it does
 
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/Sherwynm0702/LedgerJack.git
-   cd LedgerJack
-   ```
+- Register and log in (passwords are hashed, sessions use JWTs, and the app's pages are protected)
+- Add, edit, and remove employees along with their salaries
+- Log business expenses by category, and edit or delete them
+- Run payroll for an employee and keep a history of every run
+- View a dashboard with totals and an expenses-by-category chart
 
-2. Install dependencies:
-   ```bash
-   npm install
-   npm install --prefix backend
-   npm install --prefix frontend
-   ```
+## Tech stack
 
-3. Configure environment variables — create `backend/.env` (see `backend/.env.example`):
-   ```
-   DATABASE_URL="postgresql://user:password@localhost:5432/ledgerjack"
-   JWT_SECRET="your-strong-secret-here"
-   PORT=3000
-   ```
+- **Frontend:** React, TypeScript, Vite, Tailwind CSS, shadcn/ui, Recharts
+- **Backend:** Node.js, Express, TypeScript
+- **Database:** PostgreSQL with Prisma
+- **Auth:** JWT + bcrypt
+- **Hosting:** Vercel (frontend), Render (backend), Neon (database)
 
-4. Run database migrations:
-   ```bash
-   cd backend && npx prisma migrate dev
-   ```
+## A few things I put thought into
 
-5. Start both servers (from the project root):
-   ```bash
-   npm run dev
-   ```
+- **Data is scoped per user.** You only see your own employees, expenses, and payroll, and that's checked on the server — not just hidden in the UI. Requesting a record that isn't yours returns a 404.
+- **Payroll can't run twice in a month** for the same employee, and each record stores the salary as it was at the time. So editing someone's salary later doesn't change their past payroll records.
+- **Small UX details** like toast notifications, confirm dialogs before deleting, and proper loading/empty/error states.
 
-   Frontend runs on `http://localhost:5173`, backend on `http://localhost:3000`.
+## Things I'd add next
 
-## Project Structure
+Stuff I left out to keep the scope manageable, but would do for a real version:
+
+- Dashboard totals filtered by time period (e.g. this month) instead of all-time
+- Soft-deletes for payroll records instead of deleting them outright
+- Tests and a CI pipeline
+- Rate limiting and better security headers
+
+## Running it locally
+
+You'll need Node.js 18+ and a PostgreSQL database.
+
+```bash
+# 1. Clone
+git clone https://github.com/Sherwynm0702/LedgerJack.git
+cd LedgerJack
+
+# 2. Install (root, backend, frontend)
+npm install
+npm install --prefix backend
+npm install --prefix frontend
+```
+
+Create a `backend/.env` file (there's a `.env.example` to copy from):
+
+```
+DATABASE_URL="postgresql://user:password@localhost:5432/ledgerjack"
+JWT_SECRET="your-strong-secret-here"
+PORT=3000
+```
+
+Then set up the database and start both servers:
+
+```bash
+cd backend && npx prisma migrate dev && cd ..
+npm run dev
+```
+
+Frontend runs on `http://localhost:5173`, backend on `http://localhost:3000`.
+
+## Project structure
 
 ```
 LedgerJack/
 ├── backend/
 │   └── src/
-│       ├── controllers/   # Request handlers (auth, employee, expense, payroll)
-│       ├── routes/        # Express route definitions
-│       ├── middleware/     # JWT auth middleware
+│       ├── controllers/   # Auth, employee, expense, payroll logic
+│       ├── routes/        # Express routes
+│       ├── middleware/    # JWT auth check
 │       └── utils/         # Prisma client
 └── frontend/
     └── src/
         ├── pages/         # Dashboard, Employees, Expenses, Payroll, Login, Register
-        ├── components/    # Navbar, ProtectedRoute
-        ├── contexts/      # AuthContext
-        └── services/      # Axios API instance
+        ├── components/    # Navbar, UI components
+        ├── contexts/      # Auth context
+        └── services/      # Axios setup
 ```
 
 ## License
