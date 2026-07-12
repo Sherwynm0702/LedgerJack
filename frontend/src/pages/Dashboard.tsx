@@ -84,28 +84,8 @@ const stats = [
                     ))}
                 </div>
 
-                <Card className="mb-8">
-                    <CardHeader>
-                        <CardTitle>Expenses by Category</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {categoryData.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">No expense data yet.</p>
-                        ) : (
-                            <ChartContainer config={chartConfig} className="h-56 w-full">
-                                <BarChart data={categoryData}>
-                                    <CartesianGrid vertical={false} />
-                                    <XAxis dataKey="category" tickLine={false} axisLine={false} tickMargin={8} />
-                                    <ChartTooltip content={<ChartTooltipContent />} />
-                                    <Bar dataKey="total" fill="var(--color-total)" radius={6} maxBarSize={72} />
-                                </BarChart>
-                            </ChartContainer>
-                        )}
-                    </CardContent>
-                </Card>
-
                 <h2 className="text-xl font-semibold tracking-tight mb-4">Quick Actions</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                     {actions.map((action) => (
                         <Card
                             key={action.path}
@@ -124,6 +104,26 @@ const stats = [
                         </Card>
                     ))}
                 </div>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Expenses by Category</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {categoryData.length === 0 ? (
+                            <p className="text-sm text-muted-foreground">No expense data yet.</p>
+                        ) : (
+                            <ChartContainer config={chartConfig} className="h-56 w-full">
+                                <BarChart data={categoryData}>
+                                    <CartesianGrid vertical={false} />
+                                    <XAxis dataKey="category" tickLine={false} axisLine={false} tickMargin={8} />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <Bar dataKey="total" fill="var(--color-total)" radius={6} maxBarSize={72} />
+                                </BarChart>
+                            </ChartContainer>
+                        )}
+                    </CardContent>
+                </Card>
             </main>
         </div>
     );
